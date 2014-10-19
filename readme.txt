@@ -29,9 +29,9 @@ to any page or post which will display in sequence as a dramatic looping fading
 background slideshow. If you like you could just use it as a slideshow on one
 specific post or page, then let your theme display as normal everywhere else.
 
-=Demo=
+= Demo =
 See the plugin homepage for demos and full details:
-http://strawberryjellyfish.com/wordpress-plugin-jellyfish-backdrop/
+http://strawberryjellyfish.com/wordpress-plugins/jellyfish-backdrop/
 
 == Installation ==
 
@@ -43,7 +43,7 @@ After the plugin is activated you'll find a new Backdrop Settings page under
 the Appearance menu of your WordPress Admin. Here you can configure the
 global options.
 
-==Usage==
+== Usage ==
 
 In the settings page in the Appearance menu of your WordPress admin, you can
 configure the default settings and choose whether you want a global background
@@ -66,6 +66,14 @@ By default images are shown as the main page background (body), however you
 can make the images appear as backgrounds to other areas of the page by
 supplying any valid element id or classname in the Container field on the
 admin page. eg. #main, .header
+
+It's also possible to configure, container, fade speed and slide duration
+through post custom fields if you want a post to have different values to
+those defined on the settings page. Use, the following custom fields:
+
+background_container
+background_fade_speed
+background_slide_duration
 
 == Frequently Asked Questions ==
 
