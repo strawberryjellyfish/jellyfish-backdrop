@@ -204,19 +204,18 @@ function jellyfish_backdrop_print_script() {
         array_push($image_list, $value);
       }
     }
-    $post_container = get_post_meta( $post_id, 'background_container', true );
-    if ($post_container) {
-      $container = $post_container;
+    $post_container = get_post_custom_values( 'background_container', $post_id );
+    if (! empty( $post_container ) ) {
+      $container = $post_container[0];
     }
-    $post_fade_speed = get_post_meta( $post_id, 'background_fade_speed', true );
-    if ($post_fade_speed) {
-      $fade_speed = $post_fade_speed;
+    $post_fade_speed = get_post_custom_values( 'background_fade_speed', $post_id );
+    if (! empty( $post_fade_speed ) ) {
+      $fade_speed = $post_fade_speed[0];
     }
-    $post_slide_duration = get_post_meta( $post_id, 'background_slide_duration', true );
-    if ($post_slide_duration) {
-      $slide_duration = $post_slide_duration;
+    $post_slide_duration = get_post_custom_values( 'background_slide_duration', $post_id );
+    if (! empty( $post_slide_duration ) ) {
+      $slide_duration = $post_slide_duration[0];
     }
-
   }
 
   if ( ( $options['show_default'] == true ) && empty($image_list)) {
