@@ -35,12 +35,67 @@ add_action( 'admin_menu', 'jellyfish_backdrop_settings_menu' );
 // Register and define the settings
 add_action( 'admin_init', 'jellyfish_backdrop_init' );
 
-// Queue JavaScript for frontend only
-if ( !is_admin() ) {
+if ( is_admin() ) {
+  // Set up custom meta box
+  require_once("meta-box-class/my-meta-box-class.php");
+    require_once("meta-box-class/my-meta-box-class.php");
+    $prefix = 'jellyfish_backdrop_';
+    /*
+     * configure your meta box
+     */
+    $config = array(
+        'id' => 'jellyfish_backdrop',
+        'title' => 'Backdrop Slideshow',
+        'pages' => array('post', 'page'),
+        'context' => 'normal',
+        'priority' => 'high',
+        'fields' => array(),
+        'local_images' => false,
+        'use_with_theme' => false
+    );
+    $jb_meta =  new AT_Meta_Box($config);
+
+    $jb_meta->addText('_jellyfish_backdrop_container',
+      array(
+        'name'=> 'Containing Element',
+        'desc' => 'id or class of a page element to place the images in, defaults to body (full page)',
+        'std' => 'body'
+      )
+    );
+    $jb_meta->addText('_jellyfish_backdrop_slide_duration',
+      array(
+        'name'=> 'Slide Duration',
+        'desc' => 'How long to show each image (in seconds)',
+        'std' => '5000'
+      )
+    );
+    $jb_meta->addText('_jellyfish_backdrop_fade_speed',
+      array(
+        'name'=> 'Fade Speed',
+        'desc' => 'Speed of fade between images (in seconds)',
+        'std' => '500'
+      )
+    );
+
+    $repeater_fields[] = $jb_meta->addImage('_jellyfish_backdrop_image',
+      array(
+        'name'=> 'Image'
+      ), true);
+
+    $jb_meta->addRepeaterBlock('_jellyfish_backdrop_images',
+      array(
+        'name' => 'Background Images',
+        'fields' => $repeater_fields,
+        'sortable' => true
+      )
+    );
+
+    $jb_meta->Finish();
+
+} else {
+  // Queue JavaScript for frontend only
   add_action( 'wp_enqueue_scripts', 'jellyfish_backdrop_queue_scripts' );
 }
-
-// enqueue JavaScript
 
 function jellyfish_backdrop_queue_scripts() {
   // to save unnecessary requests and bandwidth, only include js where
@@ -56,7 +111,7 @@ function jellyfish_backdrop_queue_scripts() {
   } elseif ( $jellyfish_backdrop_options['use_postmeta'] == true ) {
     // use postmeta is on, queue JavaScript if a post has a background
     if ( is_single() or is_page() ) {
-      if ( get_post_meta( get_the_ID(), 'background_image', true ) ) {
+      if ( get_post_meta( get_the_ID(), 'jellyfish_backdrop_image', true ) ) {
         $js_needed = true;
       }
     }
@@ -196,38 +251,32 @@ function jellyfish_backdrop_print_script() {
   $fade_speed = is_numeric($options['fade_speed']) ? $options['fade_speed'] : 500;
   $slide_duration = is_numeric($options['slide_duration']) ? $options['slide_duration'] : 500;
   $container = $options['container'] ? $options['container'] :'body';
-  $image_list = array();
-
+  $image_array = array();
   if ( ( $options['use_postmeta'] == true ) && ( is_single() or is_page() ) ) {
-    if ( $mykey_values = get_post_custom_values( 'background_image', $post_id ) ) {
-      foreach ( $mykey_values as $key => $value ) {
-        array_push($image_list, $value);
-      }
+    $images = get_post_meta(get_the_ID(), '_jellyfish_backdrop_images', true);
+    foreach ($images as $arr){
+      array_push($image_array, $arr['_jellyfish_backdrop_image']['url']);
     }
-    $post_container = get_post_custom_values( 'background_container', $post_id );
-    if (! empty( $post_container ) ) {
-      $container = $post_container[0];
-    }
-    $post_fade_speed = get_post_custom_values( 'background_fade_speed', $post_id );
-    if (! empty( $post_fade_speed ) ) {
-      $fade_speed = $post_fade_speed[0];
-    }
-    $post_slide_duration = get_post_custom_values( 'background_slide_duration', $post_id );
-    if (! empty( $post_slide_duration ) ) {
-      $slide_duration = $post_slide_duration[0];
-    }
+
+    $post_container = get_post_meta(get_the_ID(), '_jellyfish_backdrop_container', true );
+    if ($post_container) $container = $post_container;
+
+    $post_fade_speed = get_post_meta(get_the_ID(), '_jellyfish_backdrop_fade_speed', true );
+    if ($post_fade_speed) $fade_speed = $post_fade_speed;
+
+    $post_slide_duration = get_post_meta(get_the_ID(), '_jellyfish_backdrop_slide_duration', true );
+    if ($post_slide_duration) $slide_duration = $post_slide_duration;
   }
 
-  if ( ( $options['show_default'] == true ) && empty($image_list)) {
-    array_push($image_list, $options['default_background']);
+  if ( ( $options['show_default'] == true ) && empty($image_array)) {
+    array_push($image_array, $options['default_background']);
   }
 
-  if ($image_list) {
-      echo "
+if ( !empty($image_array) ) {
+  echo "
 <script>
   jQuery(document).ready(function($) {
-    var sjb_backgrounds = " . json_encode($image_list) . ";
-    $(sjb_backgrounds).each(function(){ $('<img/>')[0].src = this; });
+    var sjb_backgrounds = " . json_encode($image_array) . ";
     $('$container').backstretch(sjb_backgrounds,
       {speed: $fade_speed, duration: $slide_duration}
     );
