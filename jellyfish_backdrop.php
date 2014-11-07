@@ -37,13 +37,13 @@ add_action( 'admin_init', 'jellyfish_backdrop_init' );
 
 if ( is_admin() ) {
   // Set up custom meta box
-  require_once("meta-box-class/my-meta-box-class.php");
     require_once("meta-box-class/my-meta-box-class.php");
-    $prefix = 'jellyfish_backdrop_';
+    require_once("meta-box-class/my-meta-box-class.php");
+    $jb_prefix = 'jellyfish_backdrop_';
     /*
      * configure your meta box
      */
-    $config = array(
+    $jb_config = array(
         'id' => 'jellyfish_backdrop',
         'title' => 'Backdrop Slideshow',
         'pages' => array('post', 'page'),
@@ -53,44 +53,48 @@ if ( is_admin() ) {
         'local_images' => false,
         'use_with_theme' => false
     );
-    $jb_meta =  new AT_Meta_Box($config);
+    $jb_meta =  new AT_Meta_Box($jb_config);
 
-    $jb_meta->addText('_jellyfish_backdrop_container',
+    $jb_meta->add_text('_jellyfish_backdrop_container',
       array(
         'name'=> 'Containing Element',
         'desc' => 'id or class of a page element to place the images in, defaults to body (full page)',
-        'std' => 'body'
+        'std' => 'body',
+        'class' => 'regular-text'
       )
     );
-    $jb_meta->addText('_jellyfish_backdrop_slide_duration',
+    $jb_meta->add_number('_jellyfish_backdrop_slide_duration',
       array(
         'name'=> 'Slide Duration',
         'desc' => 'How long to show each image (in seconds)',
-        'std' => '5000'
+        'std' => '5',
+        'class' => 'small-text'
       )
     );
-    $jb_meta->addText('_jellyfish_backdrop_fade_speed',
+    $jb_meta->add_number('_jellyfish_backdrop_fade_speed',
       array(
         'name'=> 'Fade Speed',
         'desc' => 'Speed of fade between images (in seconds)',
-        'std' => '500'
+        'std' => '0.5',
+        'class' => 'small-text'
       )
     );
 
-    $repeater_fields[] = $jb_meta->addImage('_jellyfish_backdrop_image',
+    $jb_repeater_fields[] = $jb_meta->add_image('_jellyfish_backdrop_image',
       array(
-        'name'=> 'Image'
+        'name'=> ''
       ), true);
 
-    $jb_meta->addRepeaterBlock('_jellyfish_backdrop_images',
+    $jb_meta->add_repeater_block('_jellyfish_backdrop_images',
       array(
         'name' => 'Background Images',
-        'fields' => $repeater_fields,
+        'fields' => $jb_repeater_fields,
+        'inline'   => true,
         'sortable' => true
       )
     );
 
-    $jb_meta->Finish();
+    $jb_meta->finish();
 
 } else {
   // Queue JavaScript for frontend only
