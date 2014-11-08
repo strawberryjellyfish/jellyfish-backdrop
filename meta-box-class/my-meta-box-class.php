@@ -12,7 +12,7 @@
  * modify and change small things and adding a few field types that i needed to my personal preference.
  * The original author did a great job in writing this class, so all props goes to him.
  *
- * @version 3.1.1
+ * @version 3.2.0
  * @copyright 2011 - 2013
  * @author Ohad Raz (email: admin@bainternet.info)
  * @link http://en.bainternet.info
@@ -179,7 +179,7 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
       // Check for special fields and add needed actions for them.
 
       //this replaces the ugly check fields methods calls
-      foreach ( array( 'upload', 'color', 'date', 'time', 'code', 'select' ) as $type ) {
+      foreach ( array( 'upload', 'color', 'date', 'time', 'code', 'select', 'slider' ) as $type ) {
         call_user_func( array( $this, 'check_field_' . $type ) );
       }
     }
@@ -301,6 +301,21 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
       wp_enqueue_script( 'at-code-js-clike', $plugin_path .'/js/codemirror/clike.js', array( 'jquery' ), false, true );
       wp_enqueue_script( 'at-code-js-php', $plugin_path .'/js/codemirror/php.js', array( 'jquery' ), false, true );
 
+    }
+  }
+
+
+  /**
+   * Check Field Slider
+   * @author Robert Miller
+   * @since 3.2.0
+   * @access public
+   */
+  public function check_field_slider() {
+
+    if ( $this->has_field( 'slider' ) && $this->is_edit_page() ) {
+      wp_enqueue_style( 'at-jquery-ui-css', $plugin_path .'/js/jquery-ui/jquery-ui.css' );
+      wp_enqueue_script( 'jquery-ui-slider' );
     }
   }
 
@@ -551,6 +566,21 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
   }
 
 
+  /**
+   * Show Field Slider
+   * @author Robert Miller
+   * @param string  $field
+   * @param string  $meta
+   * @since 3.2.0
+   * @access public
+   */
+  public function show_field_slider( $field, $meta ) {
+    $meta = $meta != '' ? intval( $meta ) : $field['std'];
+    $this->show_field_begin( $field, $meta );
+    echo "<div id='" . $field['id'] . "-slider' class='at-slider' data-value='".$meta."' data-min='".$field['min']."' data-max='".$field['max']."' data-step='".$field['step']."'></div>";
+    echo "<input type='text' class='at-text".( isset( $field['class'] )? ' ' . $field['class'] : '' )."' name='{$field['id']}' id='{$field['id']}' value='{$meta}' size='5' ".( isset( $field['style'] )? "style='{$field['style']}'" : '' )."/>";
+    $this->show_field_end( $field, $meta );
+  }
 
   /**
    * Show Field code editor.
@@ -1295,6 +1325,45 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
       'desc' => '',
       'style' =>'',
       'name' => 'Text Field'
+    );
+
+    $new_field = array_merge( $new_field, $args );
+
+    if ( false === $repeater ) {
+      $this->_fields[] = $new_field;
+    } else {
+      return $new_field;
+    }
+  }
+
+
+  /**
+   *  Add Slider Field to meta box
+   *  @author Robert Miller
+   *  @since 3.2.0
+   *  @access public
+   *  @param $id string  field id, i.e. the meta key
+   *  @param $args mixed|array
+   *    'name' => // field name/label string optional
+   *    'desc' => // field description, string optional
+   *    'std' => // default value, string optional
+   *    'min' => // lowest allowed value, string optional
+   *    'max' => // highest allowed value, string optional
+   *    'step' => // how much to increment on each slider movement, string optional
+   *    'style' =>   // custom style for field, string optional
+   *  @param $repeater bool  is this a field inside a repeatr? true|false(default)
+   */
+  public function add_slider( $id, $args, $repeater = false ) {
+    $new_field = array(
+      'type' => 'slider',
+      'id'=> $id,
+      'std' => '50',
+      'min' => '0',
+      'max' => '255',
+      'step' => '1',
+      'desc' => '',
+      'style' =>'',
+      'name' => 'Slider Field'
     );
 
     $new_field = array_merge( $new_field, $args );

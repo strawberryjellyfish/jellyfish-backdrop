@@ -40,6 +40,7 @@ var _metabox_fields = {
     this.load_time_picker();
     this.load_date_picker();
     this.load_color_picker();
+    this.load_slider();
 
     // repater Field
     $(".at-re-toggle").live('click', function() {
@@ -161,6 +162,29 @@ var _metabox_fields = {
       
     });
   },
+
+  load_slider: function() {
+    $('.at-slider').each( function() {
+      var sliderdiv  = $(this),
+        options = sliderdiv.data(),
+        slider_input = sliderdiv.next('input');
+
+      sliderdiv.slider({
+        value: options['value'],
+        min: options['min'],
+        max: options['max'],
+        step: options['step'],
+        animate: "fast",
+        slide: function( event, ui ) {
+          $( slider_input ).val( ui.value );
+        }
+      });
+      $(slider_input).on('change', function() {
+        sliderdiv.slider('value', this.value );
+      });
+    });
+  },
+
   load_color_picker: function(){
     if ($('.at-color-iris').length>0)
       $('.at-color-iris').wpColorPicker(); 

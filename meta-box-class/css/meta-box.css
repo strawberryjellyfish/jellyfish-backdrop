@@ -60,3 +60,6 @@
 .CodeMirror{
 	background-color: #fff;
 }
+
+/* slider */
+.at-slider { display: inline-block; margin-right: 20px; width: 80%;}

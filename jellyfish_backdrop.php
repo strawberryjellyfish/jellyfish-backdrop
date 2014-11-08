@@ -63,20 +63,26 @@ if ( is_admin() ) {
         'class' => 'regular-text'
       )
     );
-    $jb_meta->add_number('_jellyfish_backdrop_slide_duration',
+    $jb_meta->add_slider('_jellyfish_backdrop_slide_duration',
       array(
         'name'=> 'Slide Duration',
         'desc' => 'How long to show each image (in seconds)',
         'std' => '5',
-        'class' => 'small-text'
+        'min' => '0',
+        'max' => '30',
+        'step' => '0.1',
+        'class' => ''
       )
     );
-    $jb_meta->add_number('_jellyfish_backdrop_fade_speed',
+    $jb_meta->add_slider('_jellyfish_backdrop_fade_speed',
       array(
         'name'=> 'Fade Speed',
         'desc' => 'Speed of fade between images (in seconds)',
         'std' => '0.5',
-        'class' => 'small-text'
+        'min' => '0',
+        'max' => '5',
+        'step' => '0.01',
+        'class' => ''
       )
     );
 
