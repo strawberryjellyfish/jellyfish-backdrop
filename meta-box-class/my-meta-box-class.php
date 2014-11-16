@@ -806,7 +806,7 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
 
     $image = $has_image ? wp_get_attachment_image_src( $value['id'], $size ) : array( $this->SelfPath . '/images/photo.png', 150, 150 );
     echo "<span class='simplePanelImagePreview'>";
-    echo "<img class='{$class}' src='{$image[0]}' style='height: {$height}px; width: {$width}px;' />";
+    echo "<img class='{$class}' src='{$image[0]}' style='height: auto; max-height: {$height}px; width: auto; max-width: {$width}px;' />";
     echo "</span>";
     echo "<input type='hidden' name='{$name}[id]' value='{$value['id']}'/>";
     echo "<input type='hidden' name='{$name}[url]' value='{$value['url']}'/>";
