@@ -55,7 +55,7 @@ if ( !class_exists( 'Jellyfish_Backdrop' ) ) {
     function enqueue_script() {
 
       // only include js where actually needed
-      $options = get_option( 'jellyfish_backdrop_options' );
+      $options = get_option( 'jellyfish_backdrop' );
       $js_needed = false;
 
       if ( $options['show_default'] == true ) {

@@ -11,8 +11,8 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
       // Register settings
       $this->define_post_metabox();
       register_setting(
-        'jellyfish_backdrop_options',
-        'jellyfish_backdrop_options',
+        'jellyfish_backdrop',
+        'jellyfish_backdrop',
         array($this, 'validate_options')
       );
 
@@ -99,7 +99,7 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
     }
 
     public function setting_default_background() {
-      $options = get_option( 'jellyfish_backdrop_options' );
+      $options = get_option( 'jellyfish_backdrop' );
       $id = isset($options['id']) ? $options['id'] : '';
       $url = isset($options['url']) ? $options['url'] : '';
       if (isset($options['id'])) {
@@ -113,8 +113,8 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
       echo "<div class='simplePanelImagePreview'>";
       echo "<img class='thumbnail' src='{$image[0]}' style='height: auto; max-height: {$height}px; width: auto; max-width: {$width}px;' />";
       echo "</div>";
-      echo "<input type='hidden' name='jellyfish_backdrop_options[id]' value='{$id}'/>";
-      echo "<input type='hidden' name='jellyfish_backdrop_options[url]' value='{$url}'/>";
+      echo "<input type='hidden' name='jellyfish_backdrop[id]' value='{$id}'/>";
+      echo "<input type='hidden' name='jellyfish_backdrop[url]' value='{$url}'/>";
       if ( empty($options['url']) ) {
         echo "<input class='button simplePanelimageUpload' id='default_image' value='Upload Image' type='button'/>";
       } else {
@@ -125,11 +125,11 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
 
     public function section_text() {
       // print section HTML
-      echo '<p>You can configure the default settings for the backdrop slideshow here, as well as enable or disable the default backdrop or post and page specific slideshows..</p>';
+      echo '<p>You can configure the default settings for the backdrop slideshow here, as well as enable or disable the default backdrop or post and page specific slideshows.</p>';
     }
 
     public function setting_slide_duration() {
-      $options = get_option( 'jellyfish_backdrop_options' );
+      $options = get_option( 'jellyfish_backdrop' );
       $value = isset($options['slide_duration']) ? $options['slide_duration'] : 10;
       echo "<div id='jellyfish_backdrop_slide_duration_slider' class='at-slider' data-value='".$value."' data-min='0' data-max='30' data-step='0.1'></div>";
       echo "<input type='text' class='at-text' name='jellyfish_backdrop_slide_duration' id='jellyfish_backdrop_slide_duration' value='{$value}' size='5' />";
@@ -137,14 +137,14 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
     }
 
     public function setting_container() {
-      $options = get_option( 'jellyfish_backdrop_options' );
+      $options = get_option( 'jellyfish_backdrop' );
       $value = isset($options['container']) ? $options['container'] : 'body';
-      echo "<input id='jellyfish_backdrop_container' name='jellyfish_backdrop_options[container]' size='40' type='text' value='{$value}' />";
-      echo "<div class='desc-field'>The HTML element, id or class to apply teh background to (defaults to body)</div>";
+      echo "<input id='jellyfish_backdrop_container' name='jellyfish_backdrop[container]' size='40' type='text' value='{$value}' />";
+      echo "<div class='desc-field'>The HTML element, id or class to apply the background to (defaults to body)</div>";
     }
 
     public function setting_fade_speed() {
-      $options = get_option( 'jellyfish_backdrop_options' );
+      $options = get_option( 'jellyfish_backdrop' );
       $value = isset($options['fade_speed']) ? $options['fade_speed'] : 0.5;
       echo "<div id='jellyfish_backdrop_fade_speed_slider' class='at-slider' data-value='".$value."' data-min='0' data-max='5' data-step='0.01'></div>";
       echo "<input type='text' class='at-text' name='jellyfish_backdrop_fade_speed' id='jellyfish_backdrop_fade_speed' value='{$value}' size='5' />";
@@ -152,15 +152,15 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
     }
 
     public function setting_show_default() {
-      $options = get_option( 'jellyfish_backdrop_options' );
+      $options = get_option( 'jellyfish_backdrop' );
       $value = isset($options['show_default']) ? $options['show_default'] : false;
-      echo "<input id='jellyfish_backdrop_show_default' name='jellyfish_backdrop_options[show_default]' type='checkbox' ". checked( true, $value, false ). " /> ";
+      echo "<input id='jellyfish_backdrop_show_default' name='jellyfish_backdrop[show_default]' type='checkbox' ". checked( true, $value, false ). " /> ";
     }
 
     public function setting_use_postmeta() {
-      $options = get_option( 'jellyfish_backdrop_options' );
-      $value = isset($options['use_postmeta']) ? $options['use_postmeta'] : false;
-      echo "<input id='jellyfish_backdrop_use_postmeta' name='jellyfish_backdrop_options[use_postmeta]' type='checkbox' ". checked( true, $value, false ). " /> ";
+      $options = get_option( 'jellyfish_backdrop' );
+      $value = isset($options['use_postmeta']) ? $options['use_postmeta'] : true;
+      echo "<input id='jellyfish_backdrop_use_postmeta' name='jellyfish_backdrop[use_postmeta]' type='checkbox' ". checked( true, $value, false ). " /> ";
     }
 
     public function plugin_settings_page() {
@@ -173,7 +173,7 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
         <div class="icon32" id="icon-options-general"><br></div>
         <h2>Jellyfish Backdrop Slideshow Settings</h2>
         <form action="options.php" method="post">
-        <?php settings_fields( 'jellyfish_backdrop_options' ); ?>
+        <?php settings_fields( 'jellyfish_backdrop' ); ?>
         <?php do_settings_sections( 'jellyfish_backdrop' ); ?>
         <p class="submit">
           <input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e( 'Save Changes' ); ?>" />
@@ -187,6 +187,7 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
       // Add custom post meta box
       require_once("meta-box-class/my-meta-box-class.php");
       $jb_prefix = '_jellyfish_backdrop_';
+      $options = get_option( 'jellyfish_backdrop' );
 
       $jb_config = array(
         'id' => 'jellyfish_backdrop',
@@ -205,7 +206,7 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
         array(
           'name'=> 'Containing Element',
           'desc' => 'id or class of a page element to place the images in, defaults to body (full page)',
-          'std' => 'body',
+          'std' => $options['container'],
           'class' => 'regular-text'
         )
       );
@@ -214,7 +215,7 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
         array(
           'name'=> 'Slide Duration',
           'desc' => 'How long to show each image (in seconds)',
-          'std' => '5',
+          'std' =>  $options['slide_duration'],
           'min' => '0',
           'max' => '30',
           'step' => '0.1',
@@ -226,7 +227,7 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
         array(
           'name'=> 'Fade Speed',
           'desc' => 'Speed of fade between images (in seconds)',
-          'std' => '0.5',
+          'std' =>  $options['fade_speed'],
           'min' => '0',
           'max' => '5',
           'step' => '0.01',
