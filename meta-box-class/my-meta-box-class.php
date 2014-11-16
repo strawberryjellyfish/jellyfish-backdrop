@@ -12,7 +12,7 @@
  * modify and change small things and adding a few field types that i needed to my personal preference.
  * The original author did a great job in writing this class, so all props goes to him.
  *
- * @version 3.2.0
+ * @version 3.2.1
  * @copyright 2011 - 2013
  * @author Ohad Raz (email: admin@bainternet.info)
  * @link http://en.bainternet.info
@@ -307,6 +307,7 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
 
   /**
    * Check Field Slider
+   *
    * @author Robert Miller
    * @since 3.2.0
    * @access public
@@ -314,6 +315,7 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
   public function check_field_slider() {
 
     if ( $this->has_field( 'slider' ) && $this->is_edit_page() ) {
+      $plugin_path = $this->SelfPath;
       wp_enqueue_style( 'at-jquery-ui-css', $plugin_path .'/js/jquery-ui/jquery-ui.css' );
       wp_enqueue_script( 'jquery-ui-slider' );
     }
@@ -389,7 +391,7 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
     $this->show_field_begin( $field, $meta );
     $class = '';
     if ( $field['sortable'] )
-      $class = " repeater-sortable";
+      $class = " at-repeater-sortable";
     echo "<div class='at-repeat".$class."' id='{$field['id']}'>";
 
     $c = 0;
@@ -397,11 +399,17 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
 
     if ( count( $meta ) > 0 && is_array( $meta ) ) {
       foreach ( $meta as $me ) {
-        //for labling toggles
+        //for labelling toggles
         $mmm =  isset( $me[$field['fields'][0]['id']] )? $me[$field['fields'][0]['id']]: "";
         if ( in_array( $field['fields'][0]['type'], array( 'image', 'file' ) ) )
           $mmm = $c +1 ;
-        echo '<div class="at-repater-block">'.$mmm.'<br/><table class="repeater-table" style="display: none;">';
+
+        $table_class = ( count( $field['fields'] ) == 1 ) ? "at-repeater-table-expanded" : "at-repeater-table-collapsed";
+
+        echo '<div class="at-repeater-block">';
+        if ( count( $field['fields'] ) > 1 )
+          echo $mmm.'<br/>';
+        echo '<table class="at-repeater-table ' . $table_class . '"';
         if ( $field['inline'] ) {
           echo '<tr class="at-inline" VALIGN="top">';
         }
@@ -429,19 +437,20 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
         echo '</table>';
         if ( $field['sortable'] )
           echo '<span class="re-control dashicons dashicons-randomize at_re_sort_handle"></span>';
-        echo'
-          <span class="re-control at-re-toggle dashicons dashicons-welcome-write-blog"></span>
-          <span class="re-control dashicons dashicons-no" id="remove-'.$field['id'].'"></span>
+        if ( count( $field['fields'] ) > 1 )
+          echo'<span class="re-control at-re-toggle dashicons dashicons-welcome-write-blog"></span>';
+        echo '
+          <span class="re-control dashicons dashicons-no at_re_remove" id="remove-'.$field['id'].'"></span>
           <span class="re-control-clear"></span></div>';
         $c = $c + 1;
       }
     }
 
-    echo '<div class="button-secondary" id="add-'.$field['id'].'"><span class="dashicons dashicons-plus"></span>Add</div></div>';
+    echo '<div class="button-secondary repeater-add" id="add-'.$field['id'].'"><span class="dashicons dashicons-plus at-button-icon"></span>Add</div></div>';
 
     //create all fields once more for js function and catch with object buffer
     ob_start();
-    echo '<div class="at-repater-block"><table class="repeater-table">';
+    echo '<div class="at-repeater-block"><table class="at-repeater-table">';
     if ( $field['inline'] ) {
       echo '<tr class="at-inline" VALIGN="top">';
     }
@@ -464,7 +473,10 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
     if ( $field['inline'] ) {
       echo '</tr>';
     }
-    echo '</table><div class="dashicons dashicons-no" id="remove-'.$field['id'].'"></div></div>';
+    echo '</table>';
+    if ( $field['sortable'] )
+      echo '<span class="re-control dashicons dashicons-randomize at_re_sort_handle"></span>';
+    echo '<span class="re-control dashicons dashicons-no at_re_remove" id="remove-'.$field['id'].'"></span><span class="re-control-clear"></span></div>';
     $counter = 'countadd_'.$field['id'];
     $js_code = ob_get_clean();
     $js_code = str_replace( "\n", "", $js_code );
@@ -479,26 +491,14 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
             jQuery(this).before(\''.$js_code.'\');
             update_repeater_fields();
           });
-              jQuery("#remove-'.$field['id'].'").live(\'click\', function() {
-                  if (jQuery(this).parent().hasClass("re-control"))
-                    jQuery(this).parent().parent().remove();
-                  else
-                    jQuery(this).parent().remove();
-              });
+          jQuery("#remove-'.$field['id'].'").live(\'click\', function() {
+            if (jQuery(this).parent().hasClass("re-control"))
+              jQuery(this).parent().parent().remove();
+            else
+              jQuery(this).parent().remove();
+            });
           });
         </script>';
-    echo '<br/><style>
-.at_re_sort_highlight{min-height: 55px; background-color: #EEEEEE; margin: 2px;}
-.re-control-clear{clear: both; display: block;}
-.at_re_sort_handle{cursor: move;}
-.re-control{float: right; padding: 5px;}
-.at-inline{line-height: 1 !important;}
-.at-inline .at-field{border: 0px !important;}
-.at-inline .at-label{margin: 0 0 1px !important;}
-.at-inline .at-text{width: 70px;}
-.at-inline .at-textarea{width: 100px; height: 75px;}
-.at-repater-block{background-color: #FFFFFF;border: 1px solid;margin: 2px; min-height: 50px}
-</style>';
     $this->show_field_end( $field, $meta );
   }
 
@@ -568,6 +568,7 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
 
   /**
    * Show Field Slider
+   *
    * @author Robert Miller
    * @param string  $field
    * @param string  $meta
@@ -768,28 +769,52 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
     wp_enqueue_media();
     $this->show_field_begin( $field, $meta );
 
-    $std          = isset( $field['std'] )? $field['std'] : array( 'id' => '', 'url' => '' );
+    $std          = isset( $field['std'] ) ? $field['std'] : array( 'id' => '', 'url' => '' );
     $name         = esc_attr( $field['id'] );
     $value        = isset( $meta['id'] ) ? $meta : $std;
 
-    $value['url'] = isset( $meta['src'] )? $meta['src'] : $value['url']; //backwords capability
-    $has_image    = empty( $value['url'] )? false : true;
-    $w            = isset( $field['width'] )? $field['width'] : 'auto';
-    $h            = isset( $field['height'] )? $field['height'] : 'auto';
-    $PreviewStyle = "style='width: $w; height: $h;". ( ( !$has_image )? "display: none;'": "'" );
-    $id           = $field['id'];
-    $multiple     = isset( $field['multiple'] )? $field['multiple'] : false;
-    $multiple     = ( $multiple )? "multiFile " : "";
+    $value['url'] = isset( $meta['src'] ) ? $meta['src'] : $value['url']; //backwards capability
+    $has_image    = empty( $value['url'] ) ? false : true;
 
+    $size         = isset( $field['size'] ) ? $field['size'] : 'thumbnail';
+    $class        = isset( $field['class'] ) ? $field['class'] : '';
+    $id           = $field['id'];
+    $multiple     = isset( $field['multiple'] ) ? $field['multiple'] : false;
+    $multiple     = ( $multiple )? "multiFile " : "";
+    $hide_remove  = isset( $field['hide_remove'] ) ? $field['hide_remove'] : false;
+    $remove_class  = $hide_remove ? 'hideRemove' : '';
+
+    // calculate a height and width for an image
+    if ( is_array( $size ) ) {
+      $width = $size[0];
+      $height = $size[1];
+    } else {
+      if ( in_array( $size, array( 'thumbnail', 'medium', 'large' ) ) ) {
+        $sizes['width'] = get_option( $size . '_size_w' );
+        $sizes['height'] = get_option( $size . '_size_h' );
+        $sizes['crop'] = (bool) get_option( $size . '_crop' );
+      } elseif ( isset( $_wp_additional_image_sizes[ $size ] ) ) {
+        $sizes = array(
+          'width' => $_wp_additional_image_sizes[ $size ]['width'],
+          'height' => $_wp_additional_image_sizes[ $size ]['height'],
+          'crop' =>  $_wp_additional_image_sizes[ $size ]['crop']
+        );
+      }
+      $width = $sizes['width'];
+      $height = $sizes['height'];
+    }
+
+    $image = $has_image ? wp_get_attachment_image_src( $value['id'], $size ) : array( $this->SelfPath . '/images/photo.png', 150, 150 );
     echo "<span class='simplePanelImagePreview'>";
-    echo wp_get_attachment_image( $value['id'], array( 80, 80 ) );
-    echo "<br/></span>";
+    echo "<img class='{$class}' src='{$image[0]}' style='height: {$height}px; width: {$width}px;' />";
+    echo "</span>";
     echo "<input type='hidden' name='{$name}[id]' value='{$value['id']}'/>";
     echo "<input type='hidden' name='{$name}[url]' value='{$value['url']}'/>";
-    if ( $has_image )
+    if ( ! $has_image ) {
+      echo "<input class='{$multiple} {$remove_class} button simplePanelimageUpload' id='{$id}' value='Upload Image' type='button'/>";
+    } elseif ( ! $hide_remove ) {
       echo "<input class='{$multiple} button  simplePanelimageUploadclear' id='{$id}' value='Remove Image' type='button'/>";
-    else
-      echo "<input class='{$multiple} button simplePanelimageUpload' id='{$id}' value='Upload Image' type='button'/>";
+    }
     $this->show_field_end( $field, $meta );
   }
 
@@ -809,13 +834,12 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
     $this->show_field_begin( $field, $meta );
     if ( wp_style_is( 'wp-color-picker', 'registered' ) ) { //iris color picker since 3.5
       echo "<input class='at-color-iris".( isset( $field['class'] )? " {$field['class']}": "" )."' type='text' name='{$field['id']}' id='{$field['id']}' value='{$meta}' size='8' />";
-    }else {
+    } else {
       echo "<input class='at-color".( isset( $field['class'] )? " {$field['class']}": "" )."' type='text' name='{$field['id']}' id='{$field['id']}' value='{$meta}' size='8' />";
       echo "<input type='button' class='at-color-select button' rel='{$field['id']}' value='" . __( 'Select a color' , 'apc' ) . "'/>";
       echo "<div style='display:none' class='at-color-picker' rel='{$field['id']}'></div>";
     }
     $this->show_field_end( $field, $meta );
-
   }
 
   /**
