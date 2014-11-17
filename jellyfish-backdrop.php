@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Jellyfish Backdrop
-  Plugin URI: http://strawberryjellfish.com/wordpress-plugins/jellyfish-backdrop/
+  Plugin URI: http://strawberryjellyfish.com/wordpress-plugins/jellyfish-backdrop/
   Description: Add fullscreen background images and background slideshows to any WordPress page element.
   Author: Robert Miller <rob@strawberryjellyfish.com>
   Version: 0.6
