@@ -98,6 +98,9 @@ No, slideshows must be defined on an individual post or page basis.
 
 == Screenshots ==
 
+1. Easily set up images and slideshows using the new admin panel on post and page edit screens.
+
+2. Settings page, to set up default options.
 
 == Changelog ==
 
