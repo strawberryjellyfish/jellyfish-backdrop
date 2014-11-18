@@ -132,7 +132,7 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
       $options = get_option( 'jellyfish_backdrop' );
       $value = isset($options['slide_duration']) ? $options['slide_duration'] : 10;
       echo "<div id='jellyfish_backdrop_slide_duration_slider' class='at-slider' data-value='".$value."' data-min='0' data-max='30' data-step='0.1'></div>";
-      echo "<input type='text' class='at-text' name='jellyfish_backdrop_slide_duration' id='jellyfish_backdrop_slide_duration' value='{$value}' size='5' />";
+      echo "<input type='text' class='at-text' name='jellyfish_backdrop[slide_duration]' id='jellyfish_backdrop[slide_duration]' value='{$value}' size='5' />";
       echo "<div class='desc-field'>" . __('Time in seconds', 'jellyfish-backdrop') . "</div>";
     }
 
@@ -147,7 +147,7 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
       $options = get_option( 'jellyfish_backdrop' );
       $value = isset($options['fade_speed']) ? $options['fade_speed'] : 0.5;
       echo "<div id='jellyfish_backdrop_fade_speed_slider' class='at-slider' data-value='".$value."' data-min='0' data-max='5' data-step='0.01'></div>";
-      echo "<input type='text' class='at-text' name='jellyfish_backdrop_fade_speed' id='jellyfish_backdrop_fade_speed' value='{$value}' size='5' />";
+      echo "<input type='text' class='at-text' name='jellyfish_backdrop[fade_speed]' id='jellyfish_backdrop[fade_speed]' value='{$value}' size='5' />";
       echo "<div class='desc-field'>" . __('Time in seconds', 'jellyfish-backdrop') . "</div>";
     }
 

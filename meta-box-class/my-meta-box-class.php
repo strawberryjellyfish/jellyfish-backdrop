@@ -576,7 +576,7 @@ if ( ! class_exists( 'AT_Meta_Box' ) ) :
    * @access public
    */
   public function show_field_slider( $field, $meta ) {
-    $meta = $meta != '' ? intval( $meta ) : $field['std'];
+    $meta = is_numeric($meta) ? $meta : $field['std'];
     $this->show_field_begin( $field, $meta );
     echo "<div id='" . $field['id'] . "-slider' class='at-slider' data-value='".$meta."' data-min='".$field['min']."' data-max='".$field['max']."' data-step='".$field['step']."'></div>";
     echo "<input type='text' class='at-text".( isset( $field['class'] )? ' ' . $field['class'] : '' )."' name='{$field['id']}' id='{$field['id']}' value='{$meta}' size='5' ".( isset( $field['style'] )? "style='{$field['style']}'" : '' )."/>";
