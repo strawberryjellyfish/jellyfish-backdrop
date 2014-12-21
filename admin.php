@@ -41,7 +41,7 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
 
       add_settings_field(
         'jellyfish_backdrop_use_postmeta',
-        __('Enable Page & Post Slideshows', 'jellyfish-backdrop'),
+        __('Enable Page & Post Type Slideshows', 'jellyfish-backdrop'),
         array($this, 'setting_use_postmeta'),
         'jellyfish_backdrop',
         'main_section'
@@ -155,12 +155,19 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
       $options = get_option( 'jellyfish_backdrop' );
       $value = isset($options['show_default']) ? $options['show_default'] : false;
       echo "<input id='jellyfish_backdrop_show_default' name='jellyfish_backdrop[show_default]' type='checkbox' ". checked( true, $value, false ). " /> ";
+
     }
 
     public function setting_use_postmeta() {
       $options = get_option( 'jellyfish_backdrop' );
-      $value = isset($options['use_postmeta']) ? $options['use_postmeta'] : true;
-      echo "<input id='jellyfish_backdrop_use_postmeta' name='jellyfish_backdrop[use_postmeta]' type='checkbox' ". checked( true, $value, false ). " /> ";
+      $args = array('public'   => true);
+      $post_types = get_post_types($args);
+      foreach ($post_types as $name => $text) {
+        $value = isset($options['use_postmeta'][$name]) ? $options['use_postmeta'][$name] : false;
+        echo "<div style='display:inline-block; padding-right: 20px;'>
+          <input type='checkbox' name='jellyfish_backdrop[use_postmeta][$name]' " . checked( true, $value, false ) . " />"
+            . __($text, 'jellyfish-backdrop' )." &nbsp;&nbsp;</div>";
+      }
     }
 
     public function plugin_settings_page() {
@@ -188,11 +195,12 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
       require_once("meta-box-class/my-meta-box-class.php");
       $jb_prefix = '_jellyfish_backdrop_';
       $options = get_option( 'jellyfish_backdrop' );
+      $post_types = array_keys($options['use_postmeta'], true);
 
       $jb_config = array(
         'id' => 'jellyfish_backdrop',
         'title' => __('Backdrop Slideshow', 'jellyfish-backdrop'),
-        'pages' => array('post', 'page'),
+        'pages' => $post_types,
         'context' => 'normal',
         'priority' => 'high',
         'fields' => array(),
@@ -265,18 +273,10 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
         $valid['slide_duration'] =  sanitize_text_field($input['slide_duration']);
       if (is_numeric($input['fade_speed']) && ($input['fade_speed'] >= 0))
         $valid['fade_speed'] =  sanitize_text_field($input['fade_speed']);
-      if ( $input['use_postmeta'] == true ) {
-        $valid['use_postmeta'] = true;
-      } else {
-        $valid['use_postmeta'] = false;
+      foreach ($input['use_postmeta'] as $key => $value) {
+        $valid['use_postmeta'][$key] = ($value == true) ? true : false;
       }
-
-      if ( $input['show_default'] == true ) {
-        $valid['show_default'] = true;
-      } else {
-        $valid['show_default'] = false;
-      }
-
+      $valid['show_default'] = ( $input['show_default'] == true ) ? true : false;
       return $valid;
     }
 

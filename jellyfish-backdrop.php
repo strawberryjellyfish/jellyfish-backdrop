@@ -4,7 +4,7 @@
   Plugin URI: http://strawberryjellyfish.com/wordpress-plugins/jellyfish-backdrop/
   Description: Add fullscreen background images and background slideshows to any WordPress page element.
   Author: Robert Miller <rob@strawberryjellyfish.com>
-  Version: 0.6.1
+  Version: 0.6.5
   Author URI: http://strawberryjellyfish.com/
 */
 
@@ -56,18 +56,18 @@ if ( !class_exists( 'Jellyfish_Backdrop' ) ) {
 
       // only include js where actually needed
       $options = get_option( 'jellyfish_backdrop' );
+      $current_post_type = get_post_type( get_the_ID() );
       $js_needed = false;
 
       if ( $options['show_default'] == true ) {
         // we always need to print scripts when show_default is enabled
         $js_needed = true;
 
-      } elseif ( $options['use_postmeta'] == true ) {
-        // require JavaScript only if a post has at least one background
-        if ( is_single() or is_page() ) {
-          if ( get_post_meta( get_the_ID(), '_jellyfish_backdrop_images', true ) ) {
-            $js_needed = true;
-          }
+      } elseif ($current_post_type) {
+        if ( (array_key_exists($current_post_type, $options['use_postmeta']) &&  $options['use_postmeta'][$current_post_type] == true )
+          && ( is_single() or is_page() )
+          && ( get_post_meta( get_the_ID(), '_jellyfish_backdrop_images', true ) ) ) {
+          $js_needed = true;
         }
       }
 
@@ -92,7 +92,11 @@ if ( !class_exists( 'Jellyfish_Backdrop' ) ) {
 
       $image_array = array();
 
-      if ( ( $options['use_postmeta'] == true ) && ( is_single() or is_page() ) ) {
+      $current_post_type = get_post_type( get_the_ID() );
+
+      if ( (array_key_exists($current_post_type, $options['use_postmeta'])
+        && $options['use_postmeta'][$current_post_type] == true )
+        && ( is_single() or is_page() ) ) {
 
         // look at post meta for image and slideshow data (override default)
         $images = get_post_meta( get_the_ID(), '_jellyfish_backdrop_images', true );

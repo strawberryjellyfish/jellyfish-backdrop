@@ -21,8 +21,8 @@ and adapt to the size of your page.
 
 You can either use it as a global "cover" style background that will be
 displayed on all pages and posts of your WordPress website or you can give
-individual posts or pages their own specific background – great for giving
-parts of a website a whole different look.
+individual posts or pages including custom post types their own specific
+background – great for giving parts of a website a whole different look.
 
 Jellyfish Backdrop makes fullscreen background slideshows easy by allowing
 you to assign multiple backgrounds to any page or post.
@@ -62,8 +62,9 @@ page of your blog, enable or disable the global background or individual post
 and page background support as well as set up the default options.
 
 To add a unique background image or slideshow to a specific post or page,
-first make sure the *Enable Post and Page Slideshows* option is checked on the
-settings page. You'll now find a new area on the post / page edit screens
+first make sure that in the *Enable Page and Post Type Slideshows* section
+on the setting page, you check any post types you want to allow slideshows
+to appear on. You'll now find a new area on the post / page edit screens
 where you can add images to the Backdrop Slideshow and alter fade time,
 slide display time and where the images will appear. Jellyfish Backdrop uses
 the WordPress image uploader and Media Library, so it's easy to choose the
@@ -103,6 +104,10 @@ No, slideshows must be defined on an individual post or page basis.
 2. Settings page, to set up default options.
 
 == Changelog ==
+
+= 0.6.5 =
+* Added ability to select which post types to allow slideshows on,
+including custom post-types.
 
 = 0.6.1 =
 * Fixed bug saving slider values (slide duration and fade speed)
