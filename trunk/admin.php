@@ -192,88 +192,90 @@ if ( !class_exists( 'Jellyfish_Backdrop_Admin' ) ) {
 
     function define_post_metabox() {
       // Add custom post meta box
-      require_once("meta-box-class/my-meta-box-class.php");
       $jb_prefix = '_jellyfish_backdrop_';
       $options = get_option( 'jellyfish_backdrop' );
-      $post_types = array_keys($options['use_postmeta'], true);
+      if (! empty($options['use_postmeta'])) {
+        require_once("meta-box-class/my-meta-box-class.php");
+        $post_types = array_keys((array)$options['use_postmeta'], true);
 
-      $jb_config = array(
-        'id' => 'jellyfish_backdrop',
-        'title' => __('Backdrop Slideshow', 'jellyfish-backdrop'),
-        'pages' => $post_types,
-        'context' => 'normal',
-        'priority' => 'high',
-        'fields' => array(),
-        'local_images' => false,
-        'use_with_theme' => false
-      );
+        $jb_config = array(
+          'id' => 'jellyfish_backdrop',
+          'title' => __('Backdrop Slideshow', 'jellyfish-backdrop'),
+          'pages' => $post_types,
+          'context' => 'normal',
+          'priority' => 'high',
+          'fields' => array(),
+          'local_images' => false,
+          'use_with_theme' => false
+        );
 
-      $jb_meta =  new AT_Meta_Box($jb_config);
+        $jb_meta =  new AT_Meta_Box($jb_config);
 
-      $jb_meta->add_text('_jellyfish_backdrop_container',
-        array(
-          'name'=> __('Containing Element', 'jellyfish-backdrop'),
-          'desc' => __('id or class of a page element to place the images in, defaults to body (full page)', 'jellyfish-backdrop'),
-          'std' => $options['container'],
-          'class' => 'regular-text'
-        )
-      );
+        $jb_meta->add_text('_jellyfish_backdrop_container',
+          array(
+            'name'=> __('Containing Element', 'jellyfish-backdrop'),
+            'desc' => __('id or class of a page element to place the images in, defaults to body (full page)', 'jellyfish-backdrop'),
+            'std' => $options['container'],
+            'class' => 'regular-text'
+          )
+        );
 
-      $jb_meta->add_slider('_jellyfish_backdrop_slide_duration',
-        array(
-          'name'=> __('Slide Duration', 'jellyfish-backdrop'),
-          'desc' => __('How long to show each image (in seconds)', 'jellyfish-backdrop'),
-          'std' =>  $options['slide_duration'],
-          'min' => '0',
-          'max' => '30',
-          'step' => '0.1',
-          'class' => ''
-        )
-      );
+        $jb_meta->add_slider('_jellyfish_backdrop_slide_duration',
+          array(
+            'name'=> __('Slide Duration', 'jellyfish-backdrop'),
+            'desc' => __('How long to show each image (in seconds)', 'jellyfish-backdrop'),
+            'std' =>  $options['slide_duration'],
+            'min' => '0',
+            'max' => '30',
+            'step' => '0.1',
+            'class' => ''
+          )
+        );
 
-      $jb_meta->add_slider('_jellyfish_backdrop_fade_speed',
-        array(
-          'name'=> __('Fade Speed', 'jellyfish-backdrop'),
-          'desc' => __('Speed of fade between images (in seconds)', 'jellyfish-backdrop'),
-          'std' =>  $options['fade_speed'],
-          'min' => '0',
-          'max' => '5',
-          'step' => '0.01',
-          'class' => ''
-        )
-      );
+        $jb_meta->add_slider('_jellyfish_backdrop_fade_speed',
+          array(
+            'name'=> __('Fade Speed', 'jellyfish-backdrop'),
+            'desc' => __('Speed of fade between images (in seconds)', 'jellyfish-backdrop'),
+            'std' =>  $options['fade_speed'],
+            'min' => '0',
+            'max' => '5',
+            'step' => '0.01',
+            'class' => ''
+          )
+        );
 
-      $jb_repeater_fields[] = $jb_meta->add_image('_jellyfish_backdrop_image',
-        array(
-          'name'=> '',
-          'size' => 'thumbnail',
-          'hide_remove' => true
-        ),
-        true
-      );
+        $jb_repeater_fields[] = $jb_meta->add_image('_jellyfish_backdrop_image',
+          array(
+            'name'=> '',
+            'size' => 'thumbnail',
+            'hide_remove' => true
+          ),
+          true
+        );
 
-      $jb_meta->add_repeater_block('_jellyfish_backdrop_images',
-        array(
-          'name' => __('Background Images', 'jellyfish-backdrop'),
-          'fields' => $jb_repeater_fields,
-          'inline'   => true,
-          'sortable' => true
-        )
-      );
+        $jb_meta->add_repeater_block('_jellyfish_backdrop_images',
+          array(
+            'name' => __('Background Images', 'jellyfish-backdrop'),
+            'fields' => $jb_repeater_fields,
+            'inline'   => true,
+            'sortable' => true
+          )
+        );
 
-      $jb_meta->finish();
+        $jb_meta->finish();
+      }
     }
 
     function validate_options( $input ) {
       // return array of valid options
-      $valid['url'] =  esc_url( $input['url'] );
-      $valid['id'] =  intval( $input['id'] );
-      $valid['container'] =  wp_filter_nohtml_kses( $input['container'] );
+      $valid['url'] = esc_url( $input['url'] );
+      $valid['id'] = intval( $input['id'] );
+      $valid['container'] = wp_filter_nohtml_kses( $input['container'] );
       if (is_numeric($input['slide_duration']) && ($input['slide_duration'] > 0))
-        $valid['slide_duration'] =  sanitize_text_field($input['slide_duration']);
+        $valid['slide_duration'] = sanitize_text_field($input['slide_duration']);
       if (is_numeric($input['fade_speed']) && ($input['fade_speed'] >= 0))
-        $valid['fade_speed'] =  sanitize_text_field($input['fade_speed']);
-      foreach ($input['use_postmeta'] as $key => $value) {
+        $valid['fade_speed'] = sanitize_text_field($input['fade_speed']);
+      foreach ((array)$input['use_postmeta'] as $key => $value) {
         $valid['use_postmeta'][$key] = ($value == true) ? true : false;
       }
       $valid['show_default'] = ( $input['show_default'] == true ) ? true : false;

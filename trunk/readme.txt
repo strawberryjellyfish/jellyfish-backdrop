@@ -6,7 +6,7 @@ Plugin URI: http://strawberryjellyfish.com/wordpress-plugin-jellyfish-backdrop/
 Tags: background, fullscreen, gallery, slideshow, image
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 0.6.5
+Stable tag: 0.6.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,10 @@ No, slideshows must be defined on an individual post or page basis.
 2. Settings page, to set up default options.
 
 == Changelog ==
+
+= 0.6.6 =
+* Bugfix: Fixed error caused by missing settings introduced in 0.6.5.
+  (Plugin was broken for new installs, thanks to peckjon for pointing this out)
 
 = 0.6.5 =
 * Added ability to select which post types to allow slideshows on,
