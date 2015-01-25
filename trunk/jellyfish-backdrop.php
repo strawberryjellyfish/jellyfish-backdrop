@@ -4,7 +4,7 @@
   Plugin URI: http://strawberryjellyfish.com/wordpress-plugins/jellyfish-backdrop/
   Description: Add fullscreen background images and background slideshows to any WordPress page element.
   Author: Robert Miller <rob@strawberryjellyfish.com>
-  Version: 0.6.6
+  Version: 0.6.7
   Author URI: http://strawberryjellyfish.com/
 */
 
@@ -88,7 +88,7 @@ if ( !class_exists( 'Jellyfish_Backdrop' ) ) {
 
       $slide_duration = is_numeric( $options['slide_duration'] ) ? $options['slide_duration'] : 5;
 
-      $container = $options['container'] ? $options['container'] : 'body';
+      $container = isset($options['container']) ? $options['container'] : 'body';
 
       $image_array = array();
 
@@ -104,14 +104,16 @@ if ( !class_exists( 'Jellyfish_Backdrop' ) ) {
           array_push( $image_array, $arr['_jellyfish_backdrop_image']['url'] );
         }
 
-        $post_container = get_post_meta( get_the_ID(), '_jellyfish_backdrop_container', true );
-        if ( $post_container ) $container = $post_container;
+        if ( !empty( $image_array ) ) {
+          $post_container = get_post_meta( get_the_ID(), '_jellyfish_backdrop_container', true );
+          if ( $post_container ) $container = $post_container;
 
-        $post_fade_speed = get_post_meta( get_the_ID(), '_jellyfish_backdrop_fade_speed', true );
-        if ( $post_fade_speed ) $fade_speed = $post_fade_speed;
+          $post_fade_speed = get_post_meta( get_the_ID(), '_jellyfish_backdrop_fade_speed', true );
+          if ( $post_fade_speed ) $fade_speed = $post_fade_speed;
 
-        $post_slide_duration = get_post_meta( get_the_ID(), '_jellyfish_backdrop_slide_duration', true );
-        if ( $post_slide_duration ) $slide_duration = $post_slide_duration;
+          $post_slide_duration = get_post_meta( get_the_ID(), '_jellyfish_backdrop_slide_duration', true );
+          if ( $post_slide_duration ) $slide_duration = $post_slide_duration;
+        }
       }
 
       // seconds to milliseconds

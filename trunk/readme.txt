@@ -6,7 +6,7 @@ Plugin URI: http://strawberryjellyfish.com/wordpress-plugin-jellyfish-backdrop/
 Tags: background, fullscreen, gallery, slideshow, image
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 0.6.6
+Stable tag: 0.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,7 +77,7 @@ to define one background to be used site wide and another on a specific page.
 
 By default images are shown as the main page background (body), however you
 can make the images appear as backgrounds to other areas of the page by
-supplying any valid element id or classname in the Container field on the
+supplying any valid element id or class name in the Container field on the
 admin page. eg. #main, .header
 
 
@@ -104,6 +104,11 @@ No, slideshows must be defined on an individual post or page basis.
 2. Settings page, to set up default options.
 
 == Changelog ==
+
+= 0.6.7 =
+* Bugfix: Global settings were being overridden by post type settings when
+  there were no images. Now correctly uses global settings for container,
+  duration etc.
 
 = 0.6.6 =
 * Bugfix: Fixed error caused by missing settings introduced in 0.6.5.
