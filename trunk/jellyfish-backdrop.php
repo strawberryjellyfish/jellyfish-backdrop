@@ -4,7 +4,7 @@
   Plugin URI: http://strawberryjellyfish.com/wordpress-plugins/jellyfish-backdrop/
   Description: Add fullscreen background images and background slideshows to any WordPress page element.
   Author: Robert Miller <rob@strawberryjellyfish.com>
-  Version: 0.6.7
+  Version: 0.6.8
   Author URI: http://strawberryjellyfish.com/
 */
 
@@ -30,7 +30,7 @@ if ( !class_exists( 'Jellyfish_Backdrop' ) ) {
   class Jellyfish_Backdrop {
     public function __construct() {
       if (!defined('JELLYFISH_BACKDROP_VERSION_NUM'))
-        define('JELLYFISH_BACKDROP_VERSION_NUM', '0.6.1');
+        define('JELLYFISH_BACKDROP_VERSION_NUM', '0.6.8');
 
       update_option('jellyfish_backdrop_version', JELLYFISH_BACKDROP_VERSION_NUM);
 
@@ -100,8 +100,10 @@ if ( !class_exists( 'Jellyfish_Backdrop' ) ) {
 
         // look at post meta for image and slideshow data (override default)
         $images = get_post_meta( get_the_ID(), '_jellyfish_backdrop_images', true );
-        foreach ( $images as $arr ) {
-          array_push( $image_array, $arr['_jellyfish_backdrop_image']['url'] );
+        if (is_array($images)) {
+          foreach ( $images as $arr ) {
+            array_push( $image_array, $arr['_jellyfish_backdrop_image']['url'] );
+          }
         }
 
         if ( !empty( $image_array ) ) {
