@@ -4,7 +4,7 @@
   Plugin URI: http://strawberryjellyfish.com/wordpress-plugins/jellyfish-backdrop/
   Description: Add fullscreen background images and background slideshows to any WordPress page element.
   Author: Robert Miller <rob@strawberryjellyfish.com>
-  Version: 0.6.8
+  Version: 0.7.0
   Author URI: http://strawberryjellyfish.com/
 */
 

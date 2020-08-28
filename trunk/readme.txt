@@ -5,8 +5,8 @@ Donate link: http://strawberryjellyfish.com/donate/
 Plugin URI: http://strawberryjellyfish.com/wordpress-plugin-jellyfish-backdrop/
 Tags: background, fullscreen, gallery, slideshow, image
 Requires at least: 3.5
-Tested up to: 4.1
-Stable tag: 0.6.8
+Tested up to: 5.5
+Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,9 @@ No, slideshows must be defined on an individual post or page basis.
 2. Settings page, to set up default options.
 
 == Changelog ==
+
+= 0.7.0 =
+* Bugfix: Updated out of date script references to obsolete jQuery.live() function
 
 = 0.6.8 =
 * Bugfix: Addresses "Invalid argument supplied for foreach()" warning when
